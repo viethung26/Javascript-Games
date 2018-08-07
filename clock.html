@@ -1,0 +1,79 @@
+<html>
+
+<head>
+   <meta charset="utf-8">
+   <meta name = "viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+/*        body{background-color: ;}*/
+    </style>
+</head>
+
+<body>
+   <canvas id="myCanvas" width="500px" height="500px" style="border: 1px solid red;">
+       
+   </canvas>
+    <script>
+        const R = 200;
+        const T = 60;
+        var c = document.getElementById('myCanvas');
+        var ctx = c.getContext('2d');
+        
+        function Oscillator(w, fi) {
+            this.w = w;
+            this.fi = fi;
+        }
+        function Point(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+        
+        //Declare 3 point are endpoint of 3 clock hands
+        var seconds = new Point(0,0);
+        var minutes = new Point(0,0);
+        var hours = new Point(0,0);
+        
+        setInterval(run,1000); //start thread with time for change is 1s
+        
+        // Thread
+        function run(){
+            seconds = movePoint(new Oscillator(2*Math.PI/T,Math.PI/2));
+            minutes = movePoint(new Oscillator(2*Math.PI/(T*60),Math.PI/2));
+            hours = movePoint(new Oscillator(2*Math.PI/(12*60*T),-2*Math.PI/3));
+            drawBackground();
+            drawLine(seconds,R);
+            drawLine(minutes,3*R/4);
+            drawLine(hours,R/2);
+            
+        }
+        // Change position of endpoint by time
+        function movePoint(osc){
+            let d = new Date();
+            let t = d.getTime()*1.0/1000;
+            let x = Math.cos(-osc.w*t+osc.fi);
+            let y = -Math.sin(-osc.w*t+osc.fi);
+            return new Point(x,y);            
+        }
+        // Repaint background after endpoint was changed
+        function drawBackground(){
+            ctx.fillStyle = "white";
+            ctx.fillRect(0,0,500,500);
+            ctx.beginPath();
+            ctx.arc(250,250,200,0,2*Math.PI);
+            ctx.stroke();
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "Green";
+            ctx.fillText("Hello Game", 50, 50);
+            ctx.strokeText("Hello Game", 300, 50);
+        }
+        // Update line after endpoint was changed
+        function drawLine(point,length){
+            ctx.moveTo(250,250);
+            ctx.lineTo(point.x*length+250,point.y*length+250);
+            ctx.stroke();
+        }
+    </script>
+</body>
+
+</html>
