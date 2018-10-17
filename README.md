@@ -1,2 +1,3 @@
 # Javascript-Games
-Practise javascript by creating basic game
+Practice javascript by creating sky force game
+Date created 2018/08/07
